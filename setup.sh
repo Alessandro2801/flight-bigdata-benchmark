@@ -13,13 +13,20 @@ if [ -z "$ROOT_DIR" ]; then
     export ROOT_DIR=$(pwd)
 fi
 
-# Ferma istanze attive
-$HADOOP_HOME/sbin/stop-dfs.sh
+echo "[SETUP] Arresto di eventuali istanze attive..."
+$HADOOP_HOME/sbin/stop-all.sh
 
-# Pulizia sicura (solo file Hadoop)
+echo "[SETUP] Pulizia profonda dei file temporanei e PID..."
 rm -rf /tmp/hadoop-*
 rm -rf /tmp/hsperfdata_*
 
-# Formatta e avvia
+echo "[SETUP] Formattazione del NameNode..."
 $HADOOP_HOME/bin/hdfs namenode -format -force
+
+echo "[SETUP] Avvio del Magazzino Dati (HDFS)..."
 $HADOOP_HOME/sbin/start-dfs.sh
+
+echo "[SETUP] Avvio del Motore di Calcolo (YARN)..."
+$HADOOP_HOME/sbin/start-yarn.sh
+
+echo "[OK] Sistema Hadoop pronto, pulito e avviato al 100%!"
